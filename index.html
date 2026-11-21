@@ -1,439 +1,650 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>Староста</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-:root{--bg:#0a0a18;--card:rgba(255,255,255,.06);--bd:rgba(255,255,255,.1);--tx:#f2f2fb;--mut:#9a9ab8;
---ac:#7c6cff;--ac2:#5b8cff;--ok:#34d399;--bad:#f87171;--warn:#fbbf24}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif}
-body{min-height:100vh;background:radial-gradient(900px 500px at 15% -10%,rgba(124,108,255,.35),transparent),
-radial-gradient(700px 500px at 110% 5%,rgba(91,140,255,.25),transparent),var(--bg);background-attachment:fixed}
-#app{padding:0 14px calc(90px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
-header{display:flex;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top)) 2px 10px}
-.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#8b7cff,#5b6cff);display:grid;place-items:center;font-size:22px;box-shadow:0 6px 20px rgba(100,90,255,.45)}
-header b{display:block;font-size:17px}header span{color:var(--mut);font-size:13px}
-.pill{margin-left:auto;font-size:12px;padding:4px 10px;border-radius:99px;background:var(--card);border:1px solid var(--bd);color:var(--mut)}
-.hero{text-align:center;padding:calc(40px + env(safe-area-inset-top)) 0 20px}
-.hero .logo{width:76px;height:76px;font-size:40px;border-radius:24px;margin:0 auto 14px}
-.hero h1{margin:0 0 4px;font-size:28px}.hero p{margin:0;color:var(--mut)}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;margin:10px 0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-h3{margin:0 0 6px;font-size:17px}h4{margin:14px 0 8px;font-size:15px}
-.mut{color:var(--mut);font-size:14px}p{margin:4px 0}
-input,textarea,select{width:100%;padding:12px 14px;margin:6px 0;border-radius:12px;border:1px solid var(--bd);background:rgba(255,255,255,.06);color:var(--tx);font:inherit;outline:none}
-input:focus,textarea:focus,select:focus{border-color:var(--ac)}
-select option{color:#000}
-textarea{min-height:90px;resize:vertical}
-.btn{display:block;width:100%;padding:13px;margin:8px 0 0;border:0;border-radius:13px;color:#fff;font:inherit;font-weight:600;
-background:linear-gradient(135deg,var(--ac),var(--ac2));box-shadow:0 6px 18px rgba(100,90,255,.35)}
-.btn.sec{background:var(--card);border:1px solid var(--bd);box-shadow:none}
-.btn.red{background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.4);color:var(--bad);box-shadow:none}
-.btn:disabled{opacity:.5}
-.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.row .fit{flex:0 0 auto}
-.nav{display:flex;align-items:center;gap:8px;margin:6px 0 4px}
-.nav button{width:42px;height:42px;border-radius:12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font-size:20px}
-.nav .mid{flex:1;text-align:center;font-weight:600}
-.day{margin:16px 2px 6px;font-weight:700;display:flex;gap:8px;align-items:center}
-.day small{color:var(--ac);font-weight:600}
-.lesson{display:flex;gap:12px;align-items:center;padding:12px}
-.lesson .tm{min-width:50px;text-align:center;font-weight:700;line-height:1.2}
-.lesson .tm small{display:block;color:var(--mut);font-weight:500;font-size:12px}
-.lesson .nm{flex:1;min-width:0}.lesson .nm b{display:block}.lesson .nm span{color:var(--mut);font-size:13px}
-.bd{font-size:12px;padding:3px 8px;border-radius:99px;background:rgba(124,108,255,.2);color:#b9b0ff;white-space:nowrap;margin-left:4px}
-.bd.ok{background:rgba(52,211,153,.18);color:var(--ok)}
-.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom));
-background:rgba(14,14,30,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bd);z-index:5}
-.tabs button{flex:1;background:none;border:0;color:var(--mut);font:inherit;font-size:11px;padding:4px 0;display:flex;flex-direction:column;align-items:center;gap:2px}
-.tabs button i{font-style:normal;font-size:21px}.tabs button.on{color:#fff}.tabs button.on i{filter:drop-shadow(0 0 8px var(--ac))}
-.sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10;display:flex;align-items:flex-end}
-.sheet.hidden,.viewer.hidden{display:none}
-.sheet .in{width:100%;max-width:560px;margin:0 auto;max-height:92vh;overflow:auto;background:#12122a;border:1px solid var(--bd);
-border-radius:22px 22px 0 0;padding:14px 14px calc(24px + env(safe-area-inset-bottom))}
-.sheet .top{display:flex;align-items:flex-start;gap:10px}.sheet .top h3{flex:1;font-size:19px}
-.x0{border:0;background:var(--card);color:var(--tx);width:34px;height:34px;border-radius:99px;font-size:16px}
-.hw{border:1px solid var(--bd);border-radius:14px;padding:10px;margin:8px 0;background:rgba(255,255,255,.04)}
-.hw .t{white-space:pre-wrap;word-break:break-word}
-.lnk{display:block;margin-top:6px;color:#9db4ff;text-decoration:underline;word-break:break-all}
-.ph{display:block;max-width:100%;max-height:260px;border-radius:12px;margin-top:8px;object-fit:cover}
-.x{margin-top:8px;border:0;background:none;color:var(--bad);font:inherit;font-size:13px;padding:0}
-.srow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd)}
-.srow span{flex:1;min-width:0}
-.seg{display:flex;gap:4px}
-.seg button{width:40px;height:36px;border-radius:10px;border:1px solid var(--bd);background:var(--card);font-size:16px;opacity:.55}
-.seg button.on{opacity:1}
-.seg button.on[data-v="0"]{background:rgba(52,211,153,.3);border-color:var(--ok)}
-.seg button.on[data-v="2"]{background:rgba(251,191,36,.3);border-color:var(--warn)}
-.seg button.on[data-v="1"]{background:rgba(248,113,113,.3);border-color:var(--bad)}
-.sum{display:flex;gap:12px;color:var(--mut);font-size:14px;margin-bottom:4px}
-.bar{height:6px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:6px}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),var(--warn),var(--bad))}
-.file{display:block;text-align:center;padding:12px;border:1px dashed var(--bd);border-radius:12px;margin:6px 0;color:var(--mut)}
-.file.has{border-color:var(--ok);color:var(--ok)}
-.chips{display:flex;gap:6px;margin:6px 0}.chips button{flex:1;padding:9px;border-radius:11px;border:1px solid var(--bd);background:var(--card);color:var(--mut);font:inherit;font-size:14px}
-.chips button.on{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-color:transparent}
-.code{font:700 26px ui-monospace,Menlo,monospace;letter-spacing:4px;text-align:center;padding:8px;border-radius:12px;background:rgba(124,108,255,.15);margin:6px 0}
-.chk{display:flex;gap:8px;align-items:center;margin:8px 0;color:var(--mut);font-size:14px}.chk input{width:auto;margin:0}
-.empty{text-align:center;color:var(--mut);padding:28px 10px}
-.viewer{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:20;display:flex;align-items:center;justify-content:center}
-.viewer img{max-width:100%;max-height:100%}
-#toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#242446;border:1px solid var(--bd);
-padding:10px 16px;border-radius:12px;z-index:30;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center}
-#toast.show{opacity:1}
-.spin{text-align:center;padding:30px;color:var(--mut)}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#17191d">
+  <title>Журнал группы</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root{color-scheme:dark;--bg:#17191d;--p:#22252b;--p2:#2b2f36;--line:#3a3f48;--txt:#f4f5f6;--muted:#aeb4bd;--light:#d7dbe0;--ok:#2ea043;--warn:#d29922;--bad:#f85149}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .wrap{max-width:760px;margin:auto;padding:15px 14px 48px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 16px;gap:10px}
+    .brand{font-size:21px;font-weight:800}
+    .sub,.small,.muted{color:var(--muted)}
+    .small{font-size:12px}
+    .card{background:var(--p);border:1px solid var(--line);border-radius:17px;padding:15px;margin:12px 0;box-shadow:0 8px 24px #0002}
+    h2{font-size:18px;margin:0 0 12px}
+    h3{font-size:15px;margin:14px 0 8px}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    .btn{width:100%;border:0;border-radius:12px;padding:12px 14px;margin-top:9px;background:var(--light);color:#17191d;font-weight:750}
+    .btn.secondary,.topbtn{background:var(--p2);color:var(--txt);border:1px solid var(--line)}
+    .btn.danger{background:#3a1d20;color:#ffb4b4;border:1px solid #6e2b31}
+    .topbtn{border-radius:10px;padding:8px 10px}
+    .field{margin:10px 0}
+    .field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+    input,textarea{width:100%;padding:12px;background:#171a1f;color:var(--txt);border:1px solid var(--line);border-radius:12px}
+    textarea{min-height:190px;resize:vertical;line-height:1.5}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    .row>*{flex:1;min-width:0}
+    .days{display:flex;gap:7px;overflow:auto;padding:2px 0 10px}
+    .day{flex:0 0 auto;padding:9px 12px;border-radius:11px;background:var(--p2);border:1px solid var(--line);color:var(--muted)}
+    .day.active{background:var(--light);color:#17191d;font-weight:800}
+    .lesson{width:100%;display:flex;align-items:center;gap:11px;padding:12px;margin:8px 0;background:var(--p);border:1px solid var(--line);border-radius:14px;color:var(--txt);text-align:left}
+    .num{width:36px;height:36px;display:grid;place-items:center;background:#3a3f48;border-radius:10px;font-weight:800;flex:0 0 auto}
+    .lesson-main{flex:1;min-width:0}
+    .subject{font-weight:750}
+    .room,.time{font-size:12px;color:var(--muted)}
+    .time{white-space:nowrap}
+    .pill{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:4px 9px;color:var(--muted);font-size:11px}
+    .hidden{display:none!important}
+    .empty{text-align:center;color:var(--muted);padding:22px 10px}
+    .back{background:none;border:0;color:var(--light);padding:0 0 12px;font-weight:700}
+    .detail-title{font-size:21px;margin:8px 0 4px}
+    .separator{height:1px;background:var(--line);margin:14px 0}
+    .hwitem,.stu-row{background:#191c21;border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin:8px 0;overflow-wrap:anywhere}
+    .hwitem a{display:inline-block;margin-top:6px;color:#e2e6eb}
+    .hwitem img{display:block;max-width:100%;border-radius:9px;margin-top:8px}
+    .codes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .code{background:#191c21;border:1px dashed #59616d;border-radius:12px;padding:10px}
+    .code b{display:block;font-size:18px;letter-spacing:1px;margin:4px 0 8px}
+    .code .row{margin-top:4px}
+    .stu-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .att-btns{display:flex;gap:6px;flex-shrink:0}
+    .att-btn{padding:6px 10px;border-radius:9px;border:1px solid var(--line);background:var(--p2);color:var(--txt);font-size:12px;font-weight:700}
+    .att-btn.s0.on{background:#243b2a;border-color:var(--ok);color:#9be9a8}
+    .att-btn.s1.on{background:#471e22;border-color:var(--bad);color:#ffa198}
+    .att-btn.s2.on{background:#423314;border-color:var(--warn);color:#e3b341}
+    .toast{display:none;position:fixed;bottom:18px;left:14px;right:14px;max-width:720px;margin:auto;background:#e2e5e9;color:#17191d;border-radius:12px;padding:12px;z-index:99;font-weight:700}
+    .note{font-size:12px;color:var(--muted)}
+  </style>
 </head>
 <body>
-<div id="app"></div>
-<div id="sheet" class="sheet hidden"><div class="in" id="sheetIn"></div></div>
-<div id="viewer" class="viewer hidden"><img id="vimg" alt=""></div>
-<div id="toast"></div>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand">Журнал группы</div>
+      <div class="sub" id="caption">Расписание и домашние задания</div>
+    </div>
+    <button class="topbtn" id="refresh" title="Обновить">↻</button>
+  </header>
+
+  <section id="auth" class="hidden">
+    <div class="card">
+      <h2>Создать группу</h2>
+      <input id="groupName" placeholder="Например: 18 группа">
+      <button class="btn" id="create">Создать группу</button>
+    </div>
+    <div class="card">
+      <h2>Вступить в группу</h2>
+      <input id="joinCode" placeholder="Код приглашения">
+      <button class="btn secondary" id="join">Вступить</button>
+    </div>
+  </section>
+
+  <main id="main" class="hidden">
+    <section id="schedule">
+      <div class="card">
+        <div class="row" style="align-items:center">
+          <div>
+            <h2 style="margin:0">Расписание</h2>
+            <div class="small" id="weekLabel"></div>
+          </div>
+          <span class="pill" id="role"></span>
+        </div>
+        <div class="days" id="days"></div>
+        <div id="lessons"></div>
+      </div>
+
+      <div class="card hidden" id="editor">
+        <h2>Вставить расписание текстом</h2>
+        <p class="note">
+          Каждый день — отдельной строкой, ниже пары по порядку или с номером.
+          В субботу первая пара пропускается автоматически. Время берётся из расписания звонков[span_1](start_span)[span_1](end_span).
+        </p>
+        <textarea id="scheduleText" placeholder="Понедельник
+Классный час «Разговоры о важном»
+1. Математика — 208
+2. Основы финансовой грамотности — 222
+3. КДО — 408к
+
+Вторник
+1. Математика — 208
+2. Литература — 226
+3. Русский язык — 408"></textarea>
+        <label class="small" style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          <input type="checkbox" id="next" style="width:auto"> На следующую неделю
+        </label>
+        <button class="btn" id="saveSchedule">Сохранить расписание</button>
+      </div>
+
+      <div class="card hidden" id="rosterCard">
+        <h2>Список группы и статистика</h2>
+        <div id="statsList"></div>
+        <div id="addStudentsBox" class="hidden">
+          <div class="field">
+            <label>Добавить студентов (каждый с новой строки)</label>
+            <textarea id="studentsText" style="min-height:110px" placeholder="Асадулин Д. Р.
+Авсюк Р. А."></textarea>
+          </div>
+          <button class="btn secondary" id="addStudents">Добавить в список</button>
+        </div>
+      </div>
+
+      <div class="card hidden" id="codes">
+        <h2>Коды доступа</h2>
+        <div class="codes">
+          <div class="code">
+            <span class="small">Ученики</span>
+            <b id="studentCode">—</b>
+            <div class="row">
+              <button class="topbtn" data-copy="student">Копировать</button>
+              <button class="topbtn" data-regen="student">Обновить</button>
+            </div>
+          </div>
+          <div class="code">
+            <span class="small">Помощник</span>
+            <b id="helperCode">—</b>
+            <div class="row">
+              <button class="topbtn" data-copy="helper">Копировать</button>
+              <button class="topbtn" data-regen="helper">Обновить</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="detail" class="hidden">
+      <button class="back" id="back">← Назад к расписанию</button>
+      <div class="card">
+        <span class="pill" id="lessonDate"></span>
+        <h1 class="detail-title" id="lessonTitle"></h1>
+        <div class="muted" id="lessonInfo"></div>
+
+        <div id="attBlock" class="hidden">
+          <div class="separator"></div>
+          <h2>Посещаемость</h2>
+          <div id="attList"></div>
+          <button class="btn" id="saveAtt">Сохранить отметки</button>
+        </div>
+
+        <div class="separator"></div>
+        <h2>Домашнее задание</h2>
+        <div id="hwList"></div>
+        <div id="hwForm" class="hidden">
+          <div class="field">
+            <label>Текст задания</label>
+            <textarea id="hwText" style="min-height:85px" placeholder="Что нужно сделать?"></textarea>
+          </div>
+          <div class="field">
+            <label>Ссылка (необязательно)</label>
+            <input id="hwLink" placeholder="https://...">
+          </div>
+          <div class="field">
+            <label>Фото (необязательно)</label>
+            <input id="hwPhoto" type="file" accept="image/*">
+          </div>
+          <button class="btn" id="addHw">Добавить ДЗ</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-const tg = window.Telegram && Telegram.WebApp;
-if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor('#0a0a18'); tg.setBackgroundColor('#0a0a18'); } catch (e) {} }
-const $ = s => document.querySelector(s);
-const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const DAYS = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
-const MON = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-const parseISO = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
-const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
-const mondayOf = d => { const x = new Date(d); x.setDate(x.getDate() - (x.getDay() + 6) % 7); x.setHours(0, 0, 0, 0); return x; };
-const dlabel = s => { const d = parseISO(s); return DAYS[(d.getDay() + 6) % 7] + ', ' + d.getDate() + ' ' + MON[d.getMonth()]; };
-const S = { me: null, tab: 'week', monday: mondayOf(new Date()) };
-const canEdit = () => S.me && (S.me.role === 'owner' || S.me.role === 'helper');
-const isOwner = () => S.me && S.me.role === 'owner';
-const ROLE = { owner: 'староста', helper: 'помощник', student: 'студент' };
-
-async function api(path, o = {}) {
-  const opt = { method: o.method || 'GET', headers: { 'X-Init-Data': (tg && tg.initData) || '' } };
-  if (o.json) { opt.headers['Content-Type'] = 'application/json'; opt.body = JSON.stringify(o.json); }
-  if (o.form) opt.body = o.form;
-  const r = await fetch(path, opt);
-  let d = {}; try { d = await r.json(); } catch (e) {}
-  if (!r.ok) throw new Error(d.error || ('Ошибка ' + r.status));
-  return d;
-}
-let tt;
-function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2600); }
-const ask = m => new Promise(r => (tg && tg.showConfirm) ? tg.showConfirm(m, r) : r(confirm(m)));
-const openLink = u => (tg && tg.openLink) ? tg.openLink(u) : window.open(u, '_blank');
-function buzz() { try { tg.HapticFeedback.impactOccurred('light'); } catch (e) {} }
-const shortUrl = u => u.replace(/^https?:\/\/(www\.)?/, '').slice(0, 48);
-const t5 = s => s || '';
-
-async function shrink(file, max = 1280) {
-  try {
-    const img = await createImageBitmap(file);
-    const k = Math.min(1, max / Math.max(img.width, img.height));
-    const c = document.createElement('canvas');
-    c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
-    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-    return await new Promise(r => c.toBlob(b => r(b || file), 'image/jpeg', 0.82));
-  } catch (e) { return file; }
+const tg = window.Telegram?.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+  tg.setHeaderColor?.('#17191d');
+  tg.setBackgroundColor?.('#17191d');
 }
 
-function openSheet(html) { $('#sheetIn').innerHTML = html; $('#sheet').classList.remove('hidden'); }
-function closeSheet() { $('#sheet').classList.add('hidden'); $('#sheetIn').innerHTML = ''; }
-$('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeSheet(); });
-$('#viewer').addEventListener('click', () => $('#viewer').classList.add('hidden'));
-document.addEventListener('click', e => {
-  const p = e.target.closest('.ph'); if (p) { $('#vimg').src = p.dataset.full; $('#viewer').classList.remove('hidden'); return; }
-  const a = e.target.closest('.lnk'); if (a) openLink(a.dataset.url);
-});
+const $ = id => document.getElementById(id);
+const names = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+let me = null, day = 0, monday = '', lesson = null, attMarks = {};
 
-/* ---------- вход ---------- */
+function initData() {
+  return tg?.initData || '';
+}
+
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { el.style.display = 'none'; }, 2600);
+}
+
+async function api(url, opt = {}) {
+  const headers = { 'X-Init-Data': initData(), ...(opt.headers || {}) };
+  const res = await fetch(url, { ...opt, headers });
+  let data = {};
+  try { data = await res.json(); } catch {}
+  if (!res.ok) throw new Error(data.error || 'Ошибка запроса');
+  return data;
+}
+
+function mondayOf(d) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  return x;
+}
+
+function fmtShort(d) {
+  return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+}
+
+function canEdit() {
+  return me && ['owner', 'helper'].includes(me.role);
+}
+
+function pairLabel(l, fallbackIdx) {
+  const d = new Date(l.day + 'T12:00:00').getDay();
+  const t = l.start;
+  const maps = {
+    1: { '08:55': '1', '10:40': '2', '12:50': '3', '14:35': '4', '16:15': '5', '17:55': '6' },
+    2: { '08:00': '1', '09:45': '2', '11:55': '3', '13:40': '4', '15:20': '5', '17:00': '6' },
+    3: { '08:00': '1', '09:45': '2', '11:55': '3', '13:40': '4', '15:20': '5', '17:00': '6' },
+    4: { '08:00': '1', '09:45': '2', '11:55': '3', '13:40': '4', '15:20': '5', '17:00': '6' },
+    5: { '08:00': '1', '09:45': '2', '11:55': '3', '13:40': '4', '15:20': '5', '17:00': '6' },
+    6: { '08:00': '1', '09:20': '2', '11:00': '3', '12:20': '4', '13:40': '5', '15:00': '6' }
+  };
+  if (d === 1 && t === '08:15') return 'КЧ';
+  return maps[d]?.[t] || String(fallbackIdx + 1);
+}
+
 async function boot() {
-  if (!tg || !tg.initData) {
-    $('#app').innerHTML = '<div class="hero"><div class="logo">🎓</div><h1>Староста</h1><p>Открой это приложение из Telegram-бота</p></div>';
-    return;
+  try {
+    me = await api('/api/me');
+    if (!me.role) {
+      $('auth').classList.remove('hidden');
+      $('main').classList.add('hidden');
+      return;
+    }
+    $('auth').classList.add('hidden');
+    $('main').classList.remove('hidden');
+    $('caption').textContent = me.group || 'Моя группа';
+    $('role').textContent = me.role === 'owner' ? 'Староста' : me.role === 'helper' ? 'Помощник' : 'Ученик';
+
+    const isOwner = me.role === 'owner';
+    const editorRole = canEdit();
+    $('editor').classList.toggle('hidden', !isOwner);
+    $('codes').classList.toggle('hidden', !isOwner);
+    $('rosterCard').classList.toggle('hidden', !editorRole);
+    $('addStudentsBox').classList.toggle('hidden', !isOwner);
+
+    if (isOwner) {
+      $('studentCode').textContent = me.student_code || '—';
+      $('helperCode').textContent = me.helper_code || '—';
+    }
+
+    const mon = mondayOf(new Date());
+    monday = mon.toISOString().slice(0, 10);
+    $('weekLabel').textContent = 'Неделя с ' + fmtShort(mon);
+    renderDays(mon);
+    await loadWeek();
+    if (editorRole) await loadStats();
+  } catch (e) {
+    toast(e.message);
   }
-  try { S.me = await api('/api/me'); } catch (e) { $('#app').innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; return; }
-  S.me.role ? renderApp() : renderOnboard();
 }
 
-function renderOnboard() {
-  $('#app').innerHTML = `
-  <div class="hero"><div class="logo">🎓</div><h1>Староста</h1><p>Вся группа на одном экране</p></div>
-  <div class="card"><h3>У меня есть код</h3><p class="mut">Его даёт староста</p>
-    <input id="code" placeholder="Например K7M2QP" autocapitalize="characters" autocomplete="off">
-    <button class="btn" id="join">Войти в группу</button></div>
-  <div class="card"><h3>Я староста</h3><p class="mut">Создай группу и раздай коды студентам</p>
-    <input id="gname" placeholder="Название группы, например ИС-21">
-    <button class="btn sec" id="create">Создать группу</button></div>`;
-  $('#join').onclick = async () => {
-    try { await api('/api/join', { method: 'POST', json: { code: $('#code').value } }); S.me = await api('/api/me'); renderApp(); }
-    catch (e) { toast(e.message); }
-  };
-  $('#create').onclick = async () => {
-    try { await api('/api/create', { method: 'POST', json: { name: $('#gname').value } }); S.me = await api('/api/me'); renderApp(); }
-    catch (e) { toast(e.message); }
-  };
-}
-
-/* ---------- каркас ---------- */
-function renderApp() {
-  const tabs = [['week', '📅', 'Пары'], ['hw', '📝', 'ДЗ'], ['mat', '📚', 'Материалы']];
-  if (canEdit()) tabs.push(['stat', '📊', 'Журнал']);
-  tabs.push(['more', '⚙️', 'Ещё']);
-  $('#app').innerHTML = `<header><div class="logo">🎓</div><div><b>${esc(S.me.group)}</b><span>Староста бот</span></div>
-    <div class="pill">${ROLE[S.me.role]}</div></header><main id="view"></main>
-    <nav class="tabs">${tabs.map(t => `<button data-tab="${t[0]}"><i>${t[1]}</i>${t[2]}</button>`).join('')}</nav>`;
-  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { buzz(); go(b.dataset.tab); });
-  go(S.tab);
-}
-async function go(tab) {
-  S.tab = tab;
-  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
-  $('#view').innerHTML = '<div class="spin">Загрузка…</div>';
-  try { await ({ week: viewWeek, hw: viewHw, mat: viewMat, stat: viewStat, more: viewMore })[tab](); }
-  catch (e) { $('#view').innerHTML = '<div class="empty">' + esc(e.message) + '</div>'; }
-}
-
-/* ---------- пары ---------- */
-async function viewWeek() {
-  const a = iso(S.monday), b = addDays(S.monday, 6);
-  const d = await api('/api/week?start=' + a);
-  const byDay = {}; d.items.forEach(l => (byDay[l.day] = byDay[l.day] || []).push(l));
-  const today = S.me.today;
-  let html = `<div class="nav"><button id="pw">‹</button><div class="mid">${S.monday.getDate()} ${MON[S.monday.getMonth()]} – ${b.getDate()} ${MON[b.getMonth()]}</div><button id="nw">›</button></div>
-    <button class="btn sec" id="tod" style="margin:0 0 4px">Эта неделя</button>`;
-  const days = Object.keys(byDay).sort();
-  if (!days.length) html += `<div class="empty">На этой неделе пар нет.${isOwner() ? '<br>Отправь боту фото расписания или добавь пары во вкладке «Ещё».' : ''}</div>`;
-  days.forEach(day => {
-    html += `<div class="day">${dlabel(day)}${day === today ? '<small>сегодня</small>' : ''}</div>`;
-    byDay[day].forEach(l => {
-      html += `<div class="card lesson" data-id="${l.id}"><div class="tm">${esc(l.start || '·')}<small>${esc(l.finish)}</small></div>
-        <div class="nm"><b>${esc(l.subject)}</b><span>${l.room ? 'ауд. ' + esc(l.room) : ''}</span></div>
-        ${l.hwc ? `<span class="bd">📝 ${l.hwc}</span>` : ''}${l.marked ? '<span class="bd ok">✓</span>' : ''}</div>`;
-    });
+function renderDays(mon) {
+  $('days').innerHTML = '';
+  names.forEach((n, i) => {
+    const d = new Date(mon);
+    d.setDate(d.getDate() + i);
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'day' + (i === day ? ' active' : '');
+    b.textContent = n + ' ' + fmtShort(d);
+    b.onclick = () => {
+      day = i;
+      renderDays(mon);
+      loadWeek();
+    };
+    $('days').append(b);
   });
-  $('#view').innerHTML = html;
-  $('#pw').onclick = () => { S.monday = addDays(S.monday, -7); go('week'); };
-  $('#nw').onclick = () => { S.monday = addDays(S.monday, 7); go('week'); };
-  $('#tod').onclick = () => { S.monday = mondayOf(new Date()); go('week'); };
-  document.querySelectorAll('.lesson').forEach(c => c.onclick = () => openLesson(c.dataset.id));
 }
 
-function hwItem(h, del) {
-  return `<div class="hw">${h.text ? `<div class="t">${esc(h.text)}</div>` : ''}
-    ${h.link ? `<a class="lnk" data-url="${esc(h.link)}">🔗 ${esc(shortUrl(h.link))}</a>` : ''}
-    ${h.photo ? `<img class="ph" src="/files/${esc(h.photo)}" data-full="/files/${esc(h.photo)}" loading="lazy" alt="">` : ''}
-    ${del ? `<button class="x" data-del="${h.id}">Удалить</button>` : ''}</div>`;
+async function loadWeek() {
+  try {
+    const data = await api('/api/week?start=' + encodeURIComponent(monday));
+    const d = new Date(monday + 'T12:00:00');
+    d.setDate(d.getDate() + day);
+    const key = d.toISOString().slice(0, 10);
+    const rows = (data.items || []).filter(x => x.day === key);
+    $('lessons').innerHTML = '';
+    if (!rows.length) {
+      $('lessons').innerHTML = '<div class="empty">На этот день пары не добавлены</div>';
+      return;
+    }
+    rows.forEach((l, idx) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'lesson';
+      const label = pairLabel(l, idx);
+      const badges = [];
+      if (l.hwc > 0) badges.push('ДЗ: ' + l.hwc);
+      if (l.marked > 0) badges.push('Отмечено');
+      b.innerHTML =
+        '<div class="num"></div>' +
+        '<div class="lesson-main"><div class="subject"></div><div class="room"></div></div>' +
+        '<div class="time"></div>';
+      b.querySelector('.num').textContent = label;
+      b.querySelector('.subject').textContent = l.subject;
+      b.querySelector('.room').textContent =
+        (l.room ? 'Каб. ' + l.room : 'Кабинет не указан') +
+        (badges.length ? ' · ' + badges.join(' · ') : '');
+      b.querySelector('.time').textContent = (l.start || '') + (l.finish ? '–' + l.finish : '');
+      b.onclick = () => openLesson(l.id);
+      $('lessons').append(b);
+    });
+  } catch (e) {
+    toast(e.message);
+  }
 }
 
 async function openLesson(id) {
-  openSheet('<div class="spin">Загрузка…</div>');
-  let d;
-  try { d = await api('/api/lesson/' + id); } catch (e) { closeSheet(); return toast(e.message); }
-  const l = d.lesson, st = {}; (d.students || []).forEach(s => st[s.id] = s.status);
-  let photo = null;
-  const edit = canEdit();
-  let html = `<div class="top"><h3>${esc(l.subject)}<br><span class="mut" style="font-weight:400">${dlabel(l.day)}${l.start ? ', ' + esc(l.start) : ''}${l.room ? ' · ауд. ' + esc(l.room) : ''}</span></h3><button class="x0" id="cl">✕</button></div>
-    <h4>📝 Домашнее задание</h4>${d.hw.map(h => hwItem(h, edit)).join('') || '<p class="mut">Пока ничего не задали</p>'}`;
-  if (edit) {
-    html += `<div class="card"><textarea id="ht" placeholder="Что задали (текст)"></textarea>
-      <input id="hl" placeholder="Ссылка (необязательно)" inputmode="url">
-      <label class="file" id="hfl">📷 Прикрепить фото<input type="file" id="hf" accept="image/*" hidden></label>
-      <button class="btn" id="hadd">Добавить ДЗ</button></div>
-      <h4>✅ Кто на паре</h4>`;
-    if (!d.students.length) html += '<p class="mut">Сначала добавь студентов во вкладке «Ещё».</p>';
-    else {
-      html += `<div class="sum" id="sum"></div><button class="btn sec" id="allok" style="margin:0 0 6px">Все пришли</button>`;
-      d.students.forEach(s => {
-        html += `<div class="srow"><span>${esc(s.name)}</span><div class="seg" data-sid="${s.id}">
-          <button data-v="0" class="${s.status == 0 ? 'on' : ''}">✅</button><button data-v="2" class="${s.status == 2 ? 'on' : ''}">⏰</button><button data-v="1" class="${s.status == 1 ? 'on' : ''}">❌</button></div></div>`;
-      });
-      html += '<button class="btn" id="save">Сохранить отметки</button>';
+  try {
+    const d = await api('/api/lesson/' + id);
+    lesson = d.lesson;
+    $('schedule').classList.add('hidden');
+    $('detail').classList.remove('hidden');
+    $('lessonTitle').textContent = lesson.subject;
+    $('lessonInfo').textContent =
+      (lesson.room ? 'Каб. ' + lesson.room : 'Кабинет не указан') +
+      ' · ' + (lesson.start || '') + (lesson.finish ? '–' + lesson.finish : '');
+    $('lessonDate').textContent = new Date(lesson.day + 'T12:00:00').toLocaleDateString('ru-RU', {
+      weekday: 'long', day: 'numeric', month: 'long'
+    });
+
+    const edit = canEdit();
+    $('attBlock').classList.toggle('hidden', !edit);
+    if (edit) renderAttendance(d.students || []);
+
+    renderHw(d.hw || []);
+    $('hwForm').classList.toggle('hidden', !edit);
+  } catch (e) {
+    toast(e.message);
+  }
+}
+
+function renderAttendance(students) {
+  attMarks = {};
+  const list = $('attList');
+  list.innerHTML = '';
+  if (!students.length) {
+    list.innerHTML = '<div class="empty">Список студентов пуст. Добавь его в разделе «Список группы».</div>';
+    return;
+  }
+  students.forEach(s => {
+    attMarks[s.id] = Number(s.status || 0);
+    const row = document.createElement('div');
+    row.className = 'stu-row';
+
+    const nameEl = document.createElement('div');
+    nameEl.textContent = s.name;
+
+    const btns = document.createElement('div');
+    btns.className = 'att-btns';
+
+    const defs = [
+      { st: 0, text: 'Был', cls: 's0' },
+      { st: 1, text: 'Н', cls: 's1' },
+      { st: 2, text: 'Оп', cls: 's2' }
+    ];
+    const buttons = defs.map(cfg => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'att-btn ' + cfg.cls + (attMarks[s.id] === cfg.st ? ' on' : '');
+      btn.textContent = cfg.text;
+      btn.onclick = () => {
+        attMarks[s.id] = cfg.st;
+        buttons.forEach((x, i) => x.classList.toggle('on', defs[i].st === cfg.st));
+      };
+      return btn;
+    });
+
+    btns.append(...buttons);
+    row.append(nameEl, btns);
+    list.append(row);
+  });
+}
+
+function renderHw(items) {
+  const list = $('hwList');
+  list.innerHTML = '';
+  if (!items.length) {
+    list.innerHTML = '<div class="empty">Домашнего задания пока нет</div>';
+    return;
+  }
+  items.forEach(h => {
+    const box = document.createElement('div');
+    box.className = 'hwitem';
+    if (h.text) {
+      const p = document.createElement('div');
+      p.textContent = h.text;
+      box.append(p);
     }
-    if (isOwner()) html += '<button class="btn red" id="dl">Удалить пару</button>';
-  }
-  openSheet(html);
-  $('#cl').onclick = closeSheet;
-  const refresh = () => openLesson(id);
-  document.querySelectorAll('#sheetIn [data-del]').forEach(b => b.onclick = async () => {
-    if (!(await ask('Удалить это ДЗ?'))) return;
-    try { await api('/api/hw/' + b.dataset.del, { method: 'DELETE' }); refresh(); } catch (e) { toast(e.message); }
+    if (h.link) {
+      const a = document.createElement('a');
+      a.href = h.link;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = h.link;
+      box.append(a);
+    }
+    if (h.photo) {
+      const im = document.createElement('img');
+      im.src = '/files/' + encodeURIComponent(h.photo);
+      im.alt = 'Фото ДЗ';
+      box.append(im);
+    }
+    const meta = document.createElement('div');
+    meta.className = 'small';
+    meta.style.marginTop = '6px';
+    meta.textContent = (h.author || '') + (h.created ? ' · ' + new Date(h.created).toLocaleString('ru-RU') : '');
+    box.append(meta);
+
+    if (canEdit()) {
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'topbtn danger';
+      del.style.marginTop = '8px';
+      del.textContent = 'Удалить';
+      del.onclick = async () => {
+        try {
+          await api('/api/hw/' + h.id, { method: 'DELETE' });
+          const d = await api('/api/lesson/' + lesson.id);
+          renderHw(d.hw || []);
+          toast('Удалено');
+        } catch (e) {
+          toast(e.message);
+        }
+      };
+      box.append(del);
+    }
+    list.append(box);
   });
-  if (!edit) return;
-  $('#hf').onchange = e => { photo = e.target.files[0] || null; $('#hfl').classList.toggle('has', !!photo); $('#hfl').firstChild.textContent = photo ? '✅ Фото выбрано' : '📷 Прикрепить фото'; };
-  $('#hadd').onclick = async () => {
-    const b = $('#hadd'); b.disabled = true; b.textContent = 'Загружаю…';
-    try {
-      const fd = new FormData(); fd.append('lesson', id); fd.append('text', $('#ht').value); fd.append('link', $('#hl').value);
-      if (photo) fd.append('photo', await shrink(photo), 'p.jpg');
-      await api('/api/hw', { method: 'POST', form: fd }); toast('ДЗ добавлено ✅'); refresh();
-    } catch (e) { toast(e.message); b.disabled = false; b.textContent = 'Добавить ДЗ'; }
-  };
-  if (d.students.length) {
-    const sum = () => { const v = Object.values(st); $('#sum').innerHTML = `<span>✅ ${v.filter(x => x == 0).length}</span><span>⏰ ${v.filter(x => x == 2).length}</span><span>❌ ${v.filter(x => x == 1).length}</span>`; };
-    sum();
-    document.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
-      buzz(); const sid = b.parentNode.dataset.sid; st[sid] = +b.dataset.v;
-      b.parentNode.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); sum();
+}
+
+async function loadStats() {
+  try {
+    const data = await api('/api/stats');
+    const items = data.items || [];
+    const lim = Number(data.limit || 3);
+    const wrap = $('statsList');
+    wrap.innerHTML = '';
+    if (!items.length) {
+      wrap.innerHTML = '<div class="empty">Студентов пока нет</div>';
+      return;
+    }
+    items.forEach(s => {
+      const row = document.createElement('div');
+      row.className = 'stu-row';
+      const info = document.createElement('div');
+      const warn = Number(s.absent || 0) >= lim ? ' · На грани' : '';
+      info.innerHTML = '<div><b></b></div><div class="small"></div>';
+      info.querySelector('b').textContent = s.name;
+      info.querySelector('.small').textContent =
+        'Пропусков: ' + (s.absent || 0) + ' · Опозданий: ' + (s.late || 0) + warn;
+      row.append(info);
+
+      if (me.role === 'owner') {
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'topbtn danger';
+        del.textContent = '×';
+        del.onclick = async () => {
+          try {
+            await api('/api/students/' + s.id, { method: 'DELETE' });
+            await loadStats();
+            toast('Удалён');
+          } catch (e) {
+            toast(e.message);
+          }
+        };
+        row.append(del);
+      }
+      wrap.append(row);
     });
-    $('#allok').onclick = () => { Object.keys(st).forEach(k => st[k] = 0); document.querySelectorAll('.seg').forEach(s => s.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === '0'))); sum(); };
-    $('#save').onclick = async () => {
-      try { await api('/api/attendance', { method: 'POST', json: { lesson: id, marks: st } }); toast('Сохранено ✅'); closeSheet(); go(S.tab); }
-      catch (e) { toast(e.message); }
-    };
+  } catch (e) {
+    toast(e.message);
   }
-  if (isOwner()) $('#dl').onclick = async () => {
-    if (!(await ask('Удалить пару вместе с ДЗ и отметками?'))) return;
-    try { await api('/api/lesson/' + id, { method: 'DELETE' }); closeSheet(); go('week'); } catch (e) { toast(e.message); }
-  };
 }
 
-/* ---------- ДЗ ---------- */
-async function viewHw() {
-  const d = await api('/api/homework');
-  if (!d.items.length) { $('#view').innerHTML = '<div class="empty">Домашки пока нет 🎉</div>'; return; }
-  let html = '', last = '';
-  d.items.forEach(h => {
-    if (h.day !== last) { html += `<div class="day">${dlabel(h.day)}${h.day === S.me.today ? '<small>сегодня</small>' : ''}</div>`; last = h.day; }
-    html += `<div class="card"><b>${esc(h.subject)}</b><span class="mut"> ${esc(h.start)}</span>${hwItem(h, canEdit())}</div>`;
-  });
-  $('#view').innerHTML = html;
-  document.querySelectorAll('#view [data-del]').forEach(b => b.onclick = async () => {
-    if (!(await ask('Удалить это ДЗ?'))) return;
-    try { await api('/api/hw/' + b.dataset.del, { method: 'DELETE' }); viewHw(); } catch (e) { toast(e.message); }
-  });
-}
+$('back').onclick = () => {
+  $('detail').classList.add('hidden');
+  $('schedule').classList.remove('hidden');
+  loadWeek();
+  if (canEdit()) loadStats();
+};
 
-/* ---------- материалы ---------- */
-async function viewMat() {
-  const d = await api('/api/materials');
-  const by = {}; d.items.forEach(m => (by[m.subject] = by[m.subject] || []).push(m));
-  let html = canEdit() ? '<button class="btn" id="madd" style="margin:6px 0 0">+ Добавить материал</button>' : '';
-  const keys = Object.keys(by).sort();
-  if (!keys.length) html += '<div class="empty">Тут будут методички, конспекты и ссылки по предметам</div>';
-  keys.forEach(k => {
-    html += `<div class="day">${esc(k)}</div>`;
-    by[k].forEach(m => {
-      let body = '';
-      if (m.kind === 'link') body = `<a class="lnk" data-url="${esc(m.content)}">🔗 ${esc(m.title || shortUrl(m.content))}</a>`;
-      else if (m.kind === 'photo') body = `${m.title ? `<b>${esc(m.title)}</b>` : ''}<img class="ph" src="/files/${esc(m.content)}" data-full="/files/${esc(m.content)}" loading="lazy" alt="">`;
-      else body = `${m.title ? `<b>${esc(m.title)}</b>` : ''}<div class="t" style="white-space:pre-wrap">${esc(m.content)}</div>`;
-      html += `<div class="card">${body}${canEdit() ? `<button class="x" data-del="${m.id}">Удалить</button>` : ''}</div>`;
+$('saveAtt').onclick = async () => {
+  if (!lesson) return;
+  try {
+    await api('/api/attendance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lesson: lesson.id, marks: attMarks })
     });
-  });
-  $('#view').innerHTML = html;
-  document.querySelectorAll('#view [data-del]').forEach(b => b.onclick = async () => {
-    if (!(await ask('Удалить материал?'))) return;
-    try { await api('/api/materials/' + b.dataset.del, { method: 'DELETE' }); viewMat(); } catch (e) { toast(e.message); }
-  });
-  if (canEdit()) $('#madd').onclick = () => addMaterial(d.subjects);
-}
-function addMaterial(subjects) {
-  let kind = 'link', file = null;
-  openSheet(`<div class="top"><h3>Новый материал</h3><button class="x0" id="cl">✕</button></div>
-    <input id="msub" list="sl" placeholder="Предмет"><datalist id="sl">${subjects.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
-    <div class="chips"><button data-k="link" class="on">🔗 Ссылка</button><button data-k="photo">📷 Фото</button><button data-k="text">📄 Текст</button></div>
-    <input id="mt" placeholder="Название (необязательно)">
-    <div id="mbody"></div><button class="btn" id="msave">Сохранить</button>`);
-  $('#cl').onclick = closeSheet;
-  const body = () => {
-    $('#mbody').innerHTML = kind === 'link' ? '<input id="mc" placeholder="https://..." inputmode="url">'
-      : kind === 'text' ? '<textarea id="mc" placeholder="Текст конспекта"></textarea>'
-      : '<label class="file" id="mfl">📷 Выбрать фото<input type="file" id="mf" accept="image/*" hidden></label>';
-    if (kind === 'photo') $('#mf').onchange = e => { file = e.target.files[0] || null; $('#mfl').classList.toggle('has', !!file); $('#mfl').firstChild.textContent = file ? '✅ Фото выбрано' : '📷 Выбрать фото'; };
-  };
-  body();
-  document.querySelectorAll('.chips button').forEach(b => b.onclick = () => { kind = b.dataset.k; document.querySelectorAll('.chips button').forEach(x => x.classList.toggle('on', x === b)); body(); });
-  $('#msave').onclick = async () => {
-    const b = $('#msave'); b.disabled = true;
-    try {
-      const fd = new FormData(); fd.append('subject', $('#msub').value); fd.append('kind', kind); fd.append('title', $('#mt').value);
-      if (kind === 'photo') { if (file) fd.append('photo', await shrink(file), 'p.jpg'); } else fd.append('content', $('#mc').value);
-      await api('/api/materials', { method: 'POST', form: fd }); toast('Сохранено ✅'); closeSheet(); viewMat();
-    } catch (e) { toast(e.message); b.disabled = false; }
-  };
-}
-
-/* ---------- журнал (статистика) ---------- */
-async function viewStat() {
-  const d = await api('/api/stats');
-  if (!d.items.length) { $('#view').innerHTML = '<div class="empty">Добавь студентов во вкладке «Ещё»</div>'; return; }
-  const max = Math.max(d.limit, ...d.items.map(x => x.absent));
-  const risk = d.items.filter(x => x.absent >= d.limit);
-  let html = `<div class="card"><h3>Посещаемость</h3><p class="mut">🚨 ${risk.length} на грани (от ${d.limit} пропусков)</p></div>`;
-  d.items.forEach(x => {
-    const flag = x.absent >= d.limit ? '🚨' : (x.absent == d.limit - 1 && d.limit > 1 ? '⚠️' : '');
-    html += `<div class="card"><div class="row"><b style="flex:1">${flag} ${esc(x.name)}</b><span class="mut fit">❌ ${x.absent} · ⏰ ${x.late}</span></div>
-      <div class="bar"><i style="width:${Math.round(x.absent / max * 100)}%"></i></div></div>`;
-  });
-  $('#view').innerHTML = html;
-}
-
-/* ---------- ещё ---------- */
-async function viewMore() {
-  let html = '';
-  if (isOwner()) {
-    html += `<div class="card"><h3>Коды доступа</h3>
-      <p class="mut">Студенты (смотрят расписание и ДЗ)</p><div class="code" data-c="${S.me.student_code}">${S.me.student_code}</div>
-      <div class="row"><button class="btn sec" data-share="student">Поделиться</button><button class="btn sec" data-regen="student">Новый код</button></div>
-      <p class="mut" style="margin-top:14px">Помощники (ещё и отмечают пары и добавляют ДЗ)</p><div class="code" data-c="${S.me.helper_code}">${S.me.helper_code}</div>
-      <div class="row"><button class="btn sec" data-share="helper">Поделиться</button><button class="btn sec" data-regen="helper">Новый код</button></div></div>
-      <div class="card"><h3>📷 Расписание по фото</h3>
-        <p class="mut">${S.me.ai ? 'ИИ прочитает фото и добавит пары на неделю. Это можно делать и просто отправив фото боту.' : 'Ключ ИИ (GEMINI_API_KEY) не подключён, смотри инструкцию.'}</p>
-        <label class="file" id="sfl">Выбрать фото расписания<input type="file" id="sf" accept="image/*" hidden></label>
-        <label class="chk"><input type="checkbox" id="snext"> На следующую неделю</label>
-        <button class="btn" id="supl">Загрузить</button></div>
-      <div class="card"><h3>➕ Добавить пару вручную</h3>
-        <input type="date" id="ld"><div class="row"><input id="ls" placeholder="Начало 09:00"><input id="lf" placeholder="Конец 10:30"></div>
-        <input id="ln" placeholder="Предмет"><input id="lr" placeholder="Аудитория">
-        <button class="btn sec" id="ladd">Добавить</button></div>
-      <div class="card"><h3>👥 Студенты</h3><p class="mut">Вставь список, каждый с новой строки</p>
-        <textarea id="stx" placeholder="Иванов Иван&#10;Петров Пётр"></textarea><button class="btn" id="stadd">Добавить в список</button>
-        <div id="stl" style="margin-top:10px"></div></div>`;
-  } else {
-    html += `<div class="card"><h3>${esc(S.me.group)}</h3><p class="mut">Ты в группе как ${ROLE[S.me.role]}.</p></div>`;
+    toast('Отметки сохранены');
+    if (canEdit()) await loadStats();
+  } catch (e) {
+    toast(e.message);
   }
-  $('#view').innerHTML = html;
-  if (!isOwner()) return;
-  document.querySelectorAll('[data-share]').forEach(b => b.onclick = () => {
-    const c = b.dataset.share === 'helper' ? S.me.helper_code : S.me.student_code;
-    const text = 'Заходи в журнал группы. Открой бота и введи код: ' + c;
-    const u = 'https://t.me/share/url?url=' + encodeURIComponent('https://t.me/' + S.me.bot) + '&text=' + encodeURIComponent(text);
-    tg && tg.openTelegramLink ? tg.openTelegramLink(u) : window.open(u);
-  });
-  document.querySelectorAll('[data-regen]').forEach(b => b.onclick = async () => {
-    if (!(await ask('Старый код перестанет работать. Продолжить?'))) return;
-    try { await api('/api/regen', { method: 'POST', json: { which: b.dataset.regen } }); S.me = await api('/api/me'); viewMore(); } catch (e) { toast(e.message); }
-  });
-  let sfile = null;
-  $('#sf').onchange = e => { sfile = e.target.files[0] || null; $('#sfl').classList.toggle('has', !!sfile); $('#sfl').firstChild.textContent = sfile ? '✅ Фото выбрано' : 'Выбрать фото расписания'; };
-  $('#supl').onclick = async () => {
-    if (!sfile) return toast('Выбери фото');
-    const b = $('#supl'); b.disabled = true; b.textContent = 'ИИ читает расписание… до минуты';
-    try {
-      const fd = new FormData(); fd.append('photo', await shrink(sfile, 1800), 's.jpg'); if ($('#snext').checked) fd.append('next', '1');
-      const r = await api('/api/schedule_photo', { method: 'POST', form: fd });
-      toast('Готово ✅ Пар: ' + r.count); S.monday = parseISO(r.monday); go('week');
-    } catch (e) { toast(e.message); b.disabled = false; b.textContent = 'Загрузить'; }
-  };
-  $('#ladd').onclick = async () => {
-    try {
-      await api('/api/lesson', { method: 'POST', json: { day: $('#ld').value, start: $('#ls').value, finish: $('#lf').value, subject: $('#ln').value, room: $('#lr').value } });
-      toast('Пара добавлена ✅'); $('#ln').value = '';
-    } catch (e) { toast(e.message); }
-  };
-  const loadSt = async () => {
-    const d = await api('/api/students');
-    $('#stl').innerHTML = d.items.length ? d.items.map((s, i) => `<div class="srow"><span>${i + 1}. ${esc(s.name)}</span><button class="x" data-sd="${s.id}">Удалить</button></div>`).join('') : '<p class="mut">Список пуст</p>';
-    document.querySelectorAll('[data-sd]').forEach(b => b.onclick = async () => {
-      if (!(await ask('Удалить студента вместе с его отметками?'))) return;
-      try { await api('/api/students/' + b.dataset.sd, { method: 'DELETE' }); loadSt(); } catch (e) { toast(e.message); }
+};
+
+$('addHw').onclick = async () => {
+  if (!lesson) return;
+  try {
+    const f = new FormData();
+    f.append('lesson', lesson.id);
+    f.append('text', $('hwText').value);
+    f.append('link', $('hwLink').value);
+    if ($('hwPhoto').files[0]) f.append('photo', $('hwPhoto').files[0]);
+    await api('/api/hw', { method: 'POST', body: f });
+    $('hwText').value = '';
+    $('hwLink').value = '';
+    $('hwPhoto').value = '';
+    const d = await api('/api/lesson/' + lesson.id);
+    renderHw(d.hw || []);
+    toast('ДЗ добавлено');
+  } catch (e) {
+    toast(e.message);
+  }
+};
+
+$('saveSchedule').onclick = async () => {
+  try {
+    const d = await api('/api/schedule_text', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: $('scheduleText').value, next: $('next').checked })
     });
+    toast('Добавлено пар: ' + d.count);
+    $('scheduleText').value = '';
+    $('next').checked = false;
+    await boot();
+  } catch (e) {
+    toast(e.message);
+  }
+};
+
+$('addStudents').onclick = async () => {
+  try {
+    const d = await api('/api/students', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: $('studentsText').value })
+    });
+    $('studentsText').value = '';
+    await loadStats();
+    toast('Добавлено студентов: ' + d.added);
+  } catch (e) {
+    toast(e.message);
+  }
+};
+
+$('create').onclick = async () => {
+  try {
+    await api('/api/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: $('groupName').value })
+    });
+    await boot();
+  } catch (e) {
+    toast(e.message);
+  }
+};
+
+$('join').onclick = async () => {
+  try {
+    await api('/api/join', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: $('joinCode').value })
+    });
+    await boot();
+  } catch (e) {
+    toast(e.message);
+  }
+};
+
+$('refresh').onclick = boot;
+
+document.querySelectorAll('[data-regen]').forEach(b => {
+  b.onclick = async () => {
+    try {
+      await api('/api/regen', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ which: b.dataset.regen })
+      });
+      await boot();
+      toast('Код обновлён');
+    } catch (e) {
+      toast(e.message);
+    }
   };
-  loadSt();
-  $('#stadd').onclick = async () => {
-    try { const r = await api('/api/students', { method: 'POST', json: { text: $('#stx').value } }); toast('Добавлено: ' + r.added); $('#stx').value = ''; loadSt(); }
-    catch (e) { toast(e.message); }
+});
+
+document.querySelectorAll('[data-copy]').forEach(b => {
+  b.onclick = () => {
+    const v = $(b.dataset.copy === 'student' ? 'studentCode' : 'helperCode').textContent;
+    navigator.clipboard?.writeText(v);
+    toast('Код: ' + v);
   };
-}
+});
 
 boot();
 </script>
